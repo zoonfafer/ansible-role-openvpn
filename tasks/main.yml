@@ -24,6 +24,12 @@
     value=1
     ignoreerrors=yes
 
+- name: Enable IPv6 forwarding
+  sysctl:
+    name=net.ipv6.conf.all.forwarding
+    value=1
+    ignoreerrors=yes
+
 - name: Check for firewalld/iptables
   command: firewall-cmd --state
   register: firewalld

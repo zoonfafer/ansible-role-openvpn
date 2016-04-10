@@ -32,6 +32,8 @@ ifconfig-pool-persist ipp.txt
 push "redirect-gateway def1 bypass-dhcp"
 {% endif %}
 {% if openvpn_set_dns %}
+# Experimental IPv6 support
+# push "route-ipv6 2000::/3"
 push "dhcp-option DNS 208.67.222.222"
 push "dhcp-option DNS 208.67.220.220"
 push "dhcp-option DNS 8.8.8.8"
