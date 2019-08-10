@@ -1,3 +1,8 @@
+- name: Ensure timezone is configured
+  timezone:
+    name: "{{ openvpn_timezone }}"
+  when: openvpn_timezone is defined
+
 - name: Install EPEL
   package:
     name: epel-release
