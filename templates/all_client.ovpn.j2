@@ -1,0 +1,14 @@
+{% if openvpn_routable_lans is defined %}
+{% for network in openvpn_routable_lans %}
+{% if network.host != item %}
+{% if network.gw is defined %}
+# route {{network.ip}} {{network.netmask}}
+# {{network.gw}}
+#push "route {{network.ip}} {{network.netmask}} {{network.gw}}"
+{% else %}
+# route {{network.ip}} {{network.netmask}}
+#push "route {{network.ip}} {{network.netmask}}"
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}

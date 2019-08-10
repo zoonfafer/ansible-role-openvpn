@@ -15,6 +15,50 @@
     creates: "{{item}}.key"
   with_items: "{{clients}}"
 
+- name: Create directory for client configs
+  file:
+    path: "{{ openvpn_base_dir }}/{{ openvpn_client_config_dir }}"
+    state: directory
+
+- name: Remove temp directory for all clients
+  file:
+    path: "{{ openvpn_base_dir }}/tmp-{{ openvpn_client_config_dir }}"
+    state: absent
+
+- name: Create temp directory for all clients
+  file:
+    path: "{{ openvpn_base_dir }}/tmp-{{ openvpn_client_config_dir }}/OpenVPN-Client-{{ inventory_hostname[:24] }}-{{ item[:24] }}"
+    state: directory
+  with_items: "{{ clients }}"
+
+- name: Assign static IP
+  template:
+    src: static_client.ovpn.j2
+    dest: "{{ openvpn_base_dir }}/tmp-{{ openvpn_client_config_dir }}/OpenVPN-Client-{{ inventory_hostname[:24] }}-{{ item.host[:24] }}/static-client"
+  with_items: "{{ static_clients }}"
+
+- name: Prepare LAN routes for all clients
+  template:
+    src: all_client.ovpn.j2
+    dest: "{{ openvpn_base_dir }}/tmp-{{ openvpn_client_config_dir }}/OpenVPN-Client-{{ inventory_hostname[:24] }}-{{ item[:24] }}/all-client"
+  with_items: "{{ clients }}"
+
+- name: Prepare iroutes for routable lan clients
+  template:
+    src: routable_lan_client.ovpn.j2
+    dest: "{{ openvpn_base_dir }}/tmp-{{ openvpn_client_config_dir }}/OpenVPN-Client-{{ inventory_hostname[:24] }}-{{ item.host[:24] }}/routable-lan-client"
+  with_items: "{{ openvpn_routable_lans }}"
+
+- name: Assemble client config for all clients
+  assemble:
+    src: "{{ openvpn_base_dir }}/tmp-{{ openvpn_client_config_dir }}/OpenVPN-Client-{{ inventory_hostname[:24] }}-{{ item[:24] }}"
+    dest: "{{ openvpn_base_dir }}/{{ openvpn_client_config_dir }}/OpenVPN-Client-{{ inventory_hostname[:24] }}-{{ item[:24] }}"
+    owner: root
+    group: root
+    mode: 0444
+  with_items: "{{ clients }}"
+  when: clients is defined
+
 - name: protect client keys
   file:
     path: "{{openvpn_key_dir}}/{{item}}.key"

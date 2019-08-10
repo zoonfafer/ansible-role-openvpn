@@ -41,6 +41,9 @@ openvpn_addl_client_options: []
 openvpn_compression: lzo
 openvpn_auth_alg: SHA256
 openvpn_tun_mtu:
+openvpn_client_config_dir: ccd
+openvpn_static_clients: []
+openvpn_routable_lans: []
 
 # Used in firewalld
 firewalld_default_interface_zone: public

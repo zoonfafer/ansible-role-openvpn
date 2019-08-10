@@ -109,3 +109,7 @@ plugin /usr/lib/openvpn/plugin/lib/openvpn-auth-ldap.so "{{ openvpn_base_dir }}/
 {% endif %}
 client-cert-not-required
 {% endif %}
+
+{% if openvpn_client_config_dir is defined %}
+client-config-dir {{ openvpn_base_dir }}/{{ openvpn_client_config_dir }}
+{% endif %}
